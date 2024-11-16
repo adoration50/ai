@@ -9,14 +9,14 @@
 <body>
     <div class="store-container">
         <div class="virtual-assistant">
-            <img src="virtual_assistant.png" alt="虛擬店員" id="assistant-image">
+            <img src="virtual_assistant.png" alt="虛擬店員" id="assistant-image" onerror="console.error('圖片加載失敗')">
             <div id="speech-bubble"></div>
         </div>
         <div id="response"></div>
         <ul id="cart-items"></ul>
     </div>
 
-    <audio id="greeting-audio" src="greeting.mp3"></audio> <!-- 音訊文件 -->
+    <audio id="greeting-audio" src="greeting.mp3" onerror="console.error('音訊加載失敗')"></audio>
     <script src="script.js"></script>
 </body>
 </html>
