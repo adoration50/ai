@@ -13,15 +13,23 @@ const prices = {
   泡麵: 35,
 };
 
-// 初始化語音功能
+// 初始化語音辨識與合成
 const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new speechRecognition();
 recognition.lang = 'zh-TW';
 
+// 確保語音合成功能可用
+function testSpeechSynthesis() {
+  if (!('speechSynthesis' in window)) {
+    alert('您的瀏覽器不支援語音合成功能，請使用 Chrome 或 Edge。');
+  }
+}
+
 // 說話功能
 function speak(text) {
+  if (!window.speechSynthesis) return;
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'zh-TW'; // 設定語言
+  utterance.lang = 'zh-TW';
   clerkImage.src = 'B.gif'; // 切換圖片
   window.speechSynthesis.speak(utterance);
   utterance.onend = () => {
@@ -55,16 +63,14 @@ recognition.onresult = (event) => {
   }
 };
 
-// 瀏覽器限制解決：點擊按鈕啟動語音功能
+// 點擊按鈕啟動
 startButton.addEventListener('click', () => {
-  startButton.style.display = 'none'; // 隱藏按鈕
-  speechText.textContent = '歡迎光臨！';
+  startButton.style.display = 'none';
+  speechText.textContent = '語音功能已啟動！';
   setTimeout(() => {
     startInteraction();
   }, 1000); // 延遲 1 秒後啟動
 });
 
-// 檢查瀏覽器支援
-if (!('speechSynthesis' in window) || !('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-  alert('您的瀏覽器不支援語音功能，請使用最新版本的 Chrome 或 Edge。');
-}
+// 初始化
+testSpeechSynthesis();
