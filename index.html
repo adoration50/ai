@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>便利商店虛擬店員互動</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>互動購物網頁</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="store-container">
-        <div class="virtual-assistant">
-            <img src="virtual_assistant.png" alt="虛擬店員" id="assistant-image">
-            <div id="speech-bubble"></div>
-        </div>
-        <div id="response"></div>
-        <ul id="cart-items"></ul>
+  <div class="container">
+    <img id="clerk-image" src="A.png" alt="店員圖片">
+    <div id="speech-box">
+      <p id="speech-text">歡迎光臨！</p>
     </div>
-
-    <!-- 語音啟用按鈕（文字形式） -->
-    <div class="voice-button-container">
-        <p id="enable-voice-btn" onclick="enableVoice()">點擊這裡啟用語音互動</p>
+    <div id="cart">
+      <h3>購物車</h3>
+      <div id="cart-items"></div>
+      <p id="total-price">總計：0 元</p>
     </div>
-
-    <audio id="greeting-audio" src="greeting.mp3"></audio> <!-- 音訊文件 -->
-    <script src="script.js"></script>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
