@@ -12,6 +12,9 @@ const prices = {
   泡麵: 35,
 };
 
+let waitingForResponse = false; // 是否正在等待使用者回應
+let responseTimeout; // 用於計時的變數
+
 // 初始化語音辨識與合成
 const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new speechRecognition();
@@ -34,10 +37,13 @@ function speak(text) {
 function startRecognition() {
   recognition.start();
   speak('歡迎光臨，請問需要購買什麼？');
+  waitingForResponse = true; // 設定為等待使用者回應
+  startResponseTimeout(); // 開始計時
 }
 
 // 處理語音輸入
 recognition.onresult = (event) => {
+  clearTimeout(responseTimeout); // 清除計時器
   const speechResult = event.results[event.results.length - 1][0].transcript.trim();
   console.log('使用者說:', speechResult);
 
@@ -49,6 +55,7 @@ recognition.onresult = (event) => {
     const total = cart.reduce((sum, item) => sum + prices[item], 0);
     totalPrice.textContent = `總計：${total} 元`;
     speak(`這是你的${speechResult}，還需要購買什麼？`);
+    startResponseTimeout(); // 重置計時器
   } else if (speechResult.includes('沒了') || speechResult.includes('夠了') || speechResult.includes('結帳')) {
     // 若辨識到結帳指令
     const total = cart.reduce((sum, item) => sum + prices[item], 0);
@@ -57,8 +64,19 @@ recognition.onresult = (event) => {
   } else {
     // 未辨識到有效輸入時忽略
     console.log('未辨識到有效內容');
+    startResponseTimeout(); // 重置計時器
   }
 };
+
+// 計時等待回應
+function startResponseTimeout() {
+  clearTimeout(responseTimeout); // 清除舊計時器
+  responseTimeout = setTimeout(() => {
+    if (waitingForResponse) {
+      speak('抱歉，我沒有聽到您的需求，請再說一次。');
+    }
+  }, 60000); // 等待 60 秒
+}
 
 // 錯誤處理
 recognition.onerror = (event) => {
