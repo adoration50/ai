@@ -16,10 +16,12 @@
         <ul id="cart-items"></ul>
     </div>
 
-    <!-- 使用圖片作為啟動語音按鈕 -->
-    <img id="enable-voice-btn" src="mic_icon.png" alt="啟用語音" onclick="enableVoice()" class="voice-button">
-    
-    <audio id="greeting-audio" src="greeting.mp3"></audio>
+    <!-- 語音啟用按鈕（文字形式） -->
+    <div class="voice-button-container">
+        <p id="enable-voice-btn" onclick="enableVoice()">點擊這裡啟用語音互動</p>
+    </div>
+
+    <audio id="greeting-audio" src="greeting.mp3"></audio> <!-- 音訊文件 -->
     <script src="script.js"></script>
 </body>
 </html>
