@@ -1,5 +1,6 @@
 const clerkImage = document.getElementById('clerk-image');
 const speechText = document.getElementById('speech-text');
+const startButton = document.getElementById('start-button');
 const cartItems = document.getElementById('cart-items');
 const totalPrice = document.getElementById('total-price');
 
@@ -21,14 +22,14 @@ recognition.lang = 'zh-TW';
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-TW'; // 設定語言
+  clerkImage.src = 'B.gif'; // 切換圖片
   window.speechSynthesis.speak(utterance);
-  clerkImage.src = 'B.gif';
   utterance.onend = () => {
-    clerkImage.src = 'A.png';
+    clerkImage.src = 'A.png'; // 語音結束後恢復
   };
 }
 
-// 啟動互動
+// 啟動語音互動
 function startInteraction() {
   speak('歡迎光臨，請問需要購買什麼？');
   recognition.start();
@@ -39,7 +40,6 @@ recognition.onresult = (event) => {
   const speechResult = event.results[0][0].transcript;
   console.log('使用者說:', speechResult);
 
-  // 判斷輸入內容
   if (prices[speechResult]) {
     cart.push(speechResult);
     const itemPrice = prices[speechResult];
@@ -55,15 +55,16 @@ recognition.onresult = (event) => {
   }
 };
 
-// 延遲 1 秒自動啟動
-window.onload = () => {
+// 瀏覽器限制解決：點擊按鈕啟動語音功能
+startButton.addEventListener('click', () => {
+  startButton.style.display = 'none'; // 隱藏按鈕
+  speechText.textContent = '歡迎光臨！';
   setTimeout(() => {
-    speechText.textContent = '歡迎光臨！';
     startInteraction();
-  }, 1000); // 延遲 1 秒 (1000 毫秒)
-};
+  }, 1000); // 延遲 1 秒後啟動
+});
 
-// 瀏覽器支援檢查
+// 檢查瀏覽器支援
 if (!('speechSynthesis' in window) || !('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
   alert('您的瀏覽器不支援語音功能，請使用最新版本的 Chrome 或 Edge。');
 }
