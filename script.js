@@ -1,16 +1,18 @@
-let shoppingCart = [];  // 用來儲存顧客選擇的商品
+// script.js
+let shoppingCart = [];  // 儲存顧客選擇的商品
 const greetingText = "你好，請問您需要購買什麼商品？"; // 啟動問候語
 
-window.onload = function() {
+// 網頁載入後執行
+window.onload = function () {
     navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(function(stream) {
+        .then(function (stream) {
             setTimeout(() => {
                 playGreeting();
                 displayTextLetterByLetter(greetingText, "speech-bubble"); // 啟動文字顯示動畫
-            }, 2000); 
+            }, 2000);
             startVoiceRecognition();
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.error("無法啟用麥克風:", error);
             alert("請允許麥克風存取，以便進行語音識別！");
         });
@@ -21,10 +23,10 @@ function playGreeting() {
     speak(greetingText);
 }
 
-// 文字逐字顯示
+// 文字逐字顯示動畫
 function displayTextLetterByLetter(text, elementId) {
     const element = document.getElementById(elementId);
-    element.innerText = ""; // 清空文字
+    element.innerText = "";
     let index = 0;
 
     const interval = setInterval(() => {
@@ -34,7 +36,7 @@ function displayTextLetterByLetter(text, elementId) {
         } else {
             clearInterval(interval);
         }
-    }, 150); // 每個字母的顯示間隔時間，可調整速度
+    }, 150);
 }
 
 // 語音合成
@@ -42,6 +44,19 @@ function speak(text) {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "zh-TW";
+    synth.speak(utterance);
+}
+
+// 語音合成並等待完成
+function speakAndWait(text, callback) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "zh-TW";
+
+    utterance.onend = () => {
+        callback && callback();
+    };
+
     synth.speak(utterance);
 }
 
@@ -54,12 +69,18 @@ function startVoiceRecognition() {
 
     recognition.onresult = (event) => {
         const userInput = event.results[0][0].transcript.trim().toLowerCase();
+        console.log("語音輸入:", userInput);
         handleRequest(userInput);
     };
 
     recognition.onerror = (event) => {
         console.error("語音識別錯誤:", event.error);
-        speak("抱歉，無法辨識您的需求，請再試一次。");
+        speakAndWait("抱歉，無法辨識您的需求，請再試一次。", startVoiceRecognition);
+    };
+
+    recognition.onend = () => {
+        console.log("語音識別結束，重新啟動");
+        startVoiceRecognition();
     };
 }
 
@@ -84,23 +105,20 @@ function handleRequest(userInput) {
         return;
     } else {
         assistantText.innerText = "抱歉，我無法識別這個商品，請嘗試其他品項。";
-        response.innerHTML = "";
-        speak("抱歉，我無法識別這個商品，請嘗試其他品項。");
+        speakAndWait("抱歉，我無法識別這個商品，請嘗試其他品項。", startVoiceRecognition);
         return;
     }
 
     shoppingCart.push(product);
     const responseText = `好的，這是您要的${product}。請問還要買什麼商品嗎？`;
-    assistantText.innerText = ""; // 清空氣泡文字
+    assistantText.innerText = "";
     displayTextLetterByLetter(responseText, "speech-bubble");
     response.innerHTML = `<img src="${product.toLowerCase()}.png" alt="${product}" class="item-image" onerror="imageLoadError('${product.toLowerCase()}.png')">`;
-    speak(responseText);
-
+    speakAndWait(responseText, startVoiceRecognition);
     updateCart();
-    setTimeout(startVoiceRecognition, 2000); 
 }
 
-// 檢查結束購物的指令
+// 檢查結束購物指令
 function isEndShoppingRequest(userInput) {
     const endCommands = ["沒有", "沒了", "結帳", "夠了", "不用了"];
     return endCommands.some(command => userInput.includes(command));
