@@ -12,12 +12,12 @@ const prices = {
   泡麵: 35,
 };
 
-let waitingForResponse = false; // 是否正在等待使用者回應
-let responseTimeout; // 用於計時的變數
+let waitingForResponse = false; // 是否正在等待用戶回應
+let responseTimeout; // 記錄計時器變數
 
-// 初始化語音辨識與合成
-const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new speechRecognition();
+// 初始化語音辨識與語音合成
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
 recognition.lang = 'zh-TW';
 recognition.continuous = true; // 持續運行
 recognition.interimResults = false; // 僅返回完整結果
@@ -26,19 +26,20 @@ recognition.interimResults = false; // 僅返回完整結果
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-TW';
-  clerkImage.src = 'B.gif'; // 切換圖片
+  clerkImage.src = 'B.gif'; // 切換為說話圖片
   window.speechSynthesis.speak(utterance);
+
   utterance.onend = () => {
-    clerkImage.src = 'A.png'; // 恢復靜態圖片
+    clerkImage.src = 'A.png'; // 說完話切換回靜態圖片
   };
 }
 
-// 啟動語音辨識
+// 開始語音辨識
 function startRecognition() {
   recognition.start();
+  waitingForResponse = true; // 設置為等待用戶回應
   speak('歡迎光臨，請問需要購買什麼？');
-  waitingForResponse = true; // 設定為等待使用者回應
-  startResponseTimeout(); // 開始計時
+  startResponseTimeout(); // 啟動計時器
 }
 
 // 處理語音輸入
@@ -61,30 +62,32 @@ recognition.onresult = (event) => {
     const total = cart.reduce((sum, item) => sum + prices[item], 0);
     speak(`總共是${total}元。謝謝購物！`);
     recognition.stop(); // 停止語音辨識
+    waitingForResponse = false;
   } else {
-    // 未辨識到有效輸入時忽略
-    console.log('未辨識到有效內容');
+    // 無法辨識的輸入
+    speak('抱歉，我沒有聽懂，請再說一次。');
     startResponseTimeout(); // 重置計時器
   }
 };
 
-// 計時等待回應
+// 啟動計時等待回應
 function startResponseTimeout() {
-  clearTimeout(responseTimeout); // 清除舊計時器
+  clearTimeout(responseTimeout); // 確保清除舊的計時器
   responseTimeout = setTimeout(() => {
     if (waitingForResponse) {
       speak('抱歉，我沒有聽到您的需求，請再說一次。');
+      startResponseTimeout(); // 重新開始計時
     }
   }, 60000); // 等待 60 秒
 }
 
-// 錯誤處理
+// 處理辨識錯誤
 recognition.onerror = (event) => {
   console.error('語音辨識錯誤:', event.error);
   speak('抱歉，語音功能出現問題，請再試一次。');
 };
 
-// 開始語音互動
+// 啟動語音功能
 window.onload = () => {
   setTimeout(() => {
     startRecognition();
