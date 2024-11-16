@@ -1,7 +1,7 @@
 let shoppingCart = [];
 const greetingText = "你好，請問您需要購買什麼商品？";
 
-// 頁面載入後顯示按鈕
+// 頁面載入後顯示語音啟用按鈕
 window.onload = function () {
     document.getElementById("enable-voice-btn").style.display = "block";
     console.log("頁面已加載，語音按鈕顯示。");
@@ -73,7 +73,7 @@ function startVoiceRecognition() {
 // 簡單處理輸入
 function handleRequest(userInput) {
     if (userInput.includes("牛奶")) {
-        speak("好的，這是您要的牛奶。");
+        speak("好的，這是您要的牛奶。請問還需要什麼商品嗎？");
     } else {
         speak("抱歉，我無法識別這個商品，請嘗試其他品項。");
     }
