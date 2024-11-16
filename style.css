@@ -1,65 +1,32 @@
-/* style.css */
+/* 基本樣式 */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #f7f7f7;
 }
 
 .store-container {
     text-align: center;
-    width: 90%;
-    max-width: 600px;
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-.virtual-assistant {
-    position: relative;
-}
-
-#assistant-image {
-    width: 150px;
-    height: auto;
-    margin-bottom: 10px;
 }
 
 #speech-bubble {
-    background: #e0f7fa;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px auto;
-    width: 80%;
-    text-align: left;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #00796b;
-}
-
-#response {
-    margin-top: 20px;
-}
-
-.item-image {
-    width: 100px;
-    height: auto;
-    margin: 10px 0;
-}
-
-#cart-items {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0 0 0;
-}
-
-#cart-items li {
-    font-size: 16px;
+    margin-top: 10px;
+    font-size: 18px;
     color: #333;
-    margin-bottom: 5px;
+}
+
+/* 啟用語音按鈕樣式 */
+.voice-button {
+    display: block;
+    margin: 20px auto;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.voice-button:hover {
+    transform: scale(1.2);
 }
