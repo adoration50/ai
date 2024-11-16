@@ -1,32 +1,52 @@
-/* 基本樣式 */
 body {
     font-family: Arial, sans-serif;
+    text-align: center;
     margin: 0;
     padding: 0;
-    background-color: #f7f7f7;
 }
 
 .store-container {
-    text-align: center;
-    padding: 20px;
+    margin-top: 50px;
+}
+
+.virtual-assistant {
+    margin-bottom: 20px;
+}
+
+#assistant-image {
+    width: 150px;
+    height: auto;
 }
 
 #speech-bubble {
-    margin-top: 10px;
     font-size: 18px;
-    color: #333;
+    background: #f1f1f1;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 10px 15px;
+    max-width: 300px;
+    text-align: left;
+    margin: 10px auto;
 }
 
-/* 啟用語音按鈕樣式 */
-.voice-button {
-    display: block;
-    margin: 20px auto;
-    width: 50px;
-    height: 50px;
+#response img {
+    width: 100px;
+    height: auto;
+}
+
+#cart-items {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.voice-button-container {
+    margin-top: 50px;
+}
+
+#enable-voice-btn {
+    font-size: 20px;
+    color: blue;
     cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.voice-button:hover {
-    transform: scale(1.2);
+    text-decoration: underline;
 }
