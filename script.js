@@ -1,6 +1,5 @@
 const clerkImage = document.getElementById('clerk-image');
 const speechText = document.getElementById('speech-text');
-const startButton = document.getElementById('start-button');
 const cartItems = document.getElementById('cart-items');
 const totalPrice = document.getElementById('total-price');
 
@@ -31,7 +30,7 @@ function speak(text) {
 
 // 啟動互動
 function startInteraction() {
-  speak('請問您需要購買什麼？');
+  speak('歡迎光臨，請問需要購買什麼？');
   recognition.start();
 }
 
@@ -56,12 +55,13 @@ recognition.onresult = (event) => {
   }
 };
 
-// 啟動頁面時添加按鈕點擊事件
-startButton.addEventListener('click', () => {
-  startButton.style.display = 'none'; // 隱藏按鈕
-  speechText.textContent = '請問您需要購買什麼？';
-  startInteraction();
-});
+// 延遲 1 秒自動啟動
+window.onload = () => {
+  setTimeout(() => {
+    speechText.textContent = '歡迎光臨！';
+    startInteraction();
+  }, 1000); // 延遲 1 秒 (1000 毫秒)
+};
 
 // 瀏覽器支援檢查
 if (!('speechSynthesis' in window) || !('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
