@@ -1,6 +1,5 @@
 const clerkImage = document.getElementById('clerk-image');
 const speechText = document.getElementById('speech-text');
-const startButton = document.getElementById('start-button');
 const cartItems = document.getElementById('cart-items');
 const totalPrice = document.getElementById('total-price');
 
@@ -17,38 +16,33 @@ const prices = {
 const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new speechRecognition();
 recognition.lang = 'zh-TW';
-
-// 確保語音合成功能可用
-function testSpeechSynthesis() {
-  if (!('speechSynthesis' in window)) {
-    alert('您的瀏覽器不支援語音合成功能，請使用 Chrome 或 Edge。');
-  }
-}
+recognition.continuous = true; // 持續運行
+recognition.interimResults = false; // 僅返回完整結果
 
 // 說話功能
 function speak(text) {
-  if (!window.speechSynthesis) return;
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-TW';
   clerkImage.src = 'B.gif'; // 切換圖片
   window.speechSynthesis.speak(utterance);
   utterance.onend = () => {
-    clerkImage.src = 'A.png'; // 語音結束後恢復
+    clerkImage.src = 'A.png'; // 恢復靜態圖片
   };
 }
 
-// 啟動語音互動
-function startInteraction() {
-  speak('歡迎光臨，請問需要購買什麼？');
+// 啟動語音辨識
+function startRecognition() {
   recognition.start();
+  speak('歡迎光臨，請問需要購買什麼？');
 }
 
-// 處理語音回應
+// 處理語音輸入
 recognition.onresult = (event) => {
-  const speechResult = event.results[0][0].transcript;
+  const speechResult = event.results[event.results.length - 1][0].transcript.trim();
   console.log('使用者說:', speechResult);
 
   if (prices[speechResult]) {
+    // 若辨識到商品名稱
     cart.push(speechResult);
     const itemPrice = prices[speechResult];
     cartItems.innerHTML += `<div><img src="${speechResult}.png" alt="${speechResult}"> ${speechResult} - ${itemPrice} 元</div>`;
@@ -56,21 +50,25 @@ recognition.onresult = (event) => {
     totalPrice.textContent = `總計：${total} 元`;
     speak(`這是你的${speechResult}，還需要購買什麼？`);
   } else if (speechResult.includes('沒了') || speechResult.includes('夠了') || speechResult.includes('結帳')) {
+    // 若辨識到結帳指令
     const total = cart.reduce((sum, item) => sum + prices[item], 0);
     speak(`總共是${total}元。謝謝購物！`);
+    recognition.stop(); // 停止語音辨識
   } else {
-    speak('抱歉，我不明白您的需求，請再說一次。');
+    // 未辨識到有效輸入時忽略
+    console.log('未辨識到有效內容');
   }
 };
 
-// 點擊按鈕啟動
-startButton.addEventListener('click', () => {
-  startButton.style.display = 'none';
-  speechText.textContent = '語音功能已啟動！';
-  setTimeout(() => {
-    startInteraction();
-  }, 1000); // 延遲 1 秒後啟動
-});
+// 錯誤處理
+recognition.onerror = (event) => {
+  console.error('語音辨識錯誤:', event.error);
+  speak('抱歉，語音功能出現問題，請再試一次。');
+};
 
-// 初始化
-testSpeechSynthesis();
+// 開始語音互動
+window.onload = () => {
+  setTimeout(() => {
+    startRecognition();
+  }, 1000); // 延遲 1 秒啟動
+};
