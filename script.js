@@ -1,96 +1,58 @@
-let shoppingCart = [];
-const greetingText = "你好，請問您需要購買什麼商品？";
+const clerkImage = document.getElementById('clerk-image');
+const speechText = document.getElementById('speech-text');
+const cartItems = document.getElementById('cart-items');
+const totalPrice = document.getElementById('total-price');
 
-// 頁面載入後顯示語音啟用按鈕
-window.onload = function () {
-    document.getElementById("enable-voice-btn").style.display = "block";
-    console.log("頁面已加載，語音按鈕顯示。");
+const cart = [];
+const prices = {
+  牛奶: 30,
+  餅乾: 21,
+  糖果: 10,
+  飲料: 25,
+  泡麵: 35,
 };
 
-// 點擊按鈕啟用語音功能
-function enableVoice() {
-    console.log("嘗試啟用語音功能...");
-    speak("語音功能已啟用，現在您可以與虛擬店員互動。");
+// 初始化語音功能
+const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new speechRecognition();
+recognition.lang = 'zh-TW';
 
-    // 隱藏按鈕
-    document.getElementById("enable-voice-btn").style.display = "none";
-
-    // 播放問候語並啟用語音識別
-    playGreeting();
-    startVoiceRecognition();
-}
-
-// 播放問候語
-function playGreeting() {
-    console.log("播放問候語音...");
-    speak(greetingText);
-    displayTextLetterByLetter(greetingText, "speech-bubble");
-}
-
-// 使用瀏覽器語音合成功能
+// 說話功能
 function speak(text) {
-    if (!window.speechSynthesis) {
-        console.error("不支援 SpeechSynthesis。");
-        return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "zh-TW";
-
-    utterance.onstart = () => console.log("語音播放開始");
-    utterance.onend = () => console.log("語音播放結束");
-    utterance.onerror = (e) => console.error("語音播放錯誤:", e);
-
-    window.speechSynthesis.speak(utterance);
+  const utterance = new SpeechSynthesisUtterance(text);
+  window.speechSynthesis.speak(utterance);
+  clerkImage.src = 'B.gif';
+  utterance.onend = () => {
+    clerkImage.src = 'A.png';
+  };
 }
 
-// 啟用語音識別
-function startVoiceRecognition() {
-    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-        console.error("不支援 SpeechRecognition。");
-        return;
-    }
-
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "zh-TW";
-    recognition.interimResults = false;
-
-    recognition.start();
-    console.log("語音識別已啟動...");
-
-    recognition.onresult = (event) => {
-        const userInput = event.results[0][0].transcript.trim().toLowerCase();
-        console.log("語音識別成功：", userInput);
-        handleRequest(userInput);
-    };
-
-    recognition.onerror = (event) => {
-        console.error("語音識別錯誤：", event.error);
-        speak("抱歉，無法辨識您的需求，請再試一次。");
-    };
+// 啟動語音
+function startInteraction() {
+  speak('請問您需要購買什麼？');
+  recognition.start();
 }
 
-// 簡單處理輸入
-function handleRequest(userInput) {
-    if (userInput.includes("牛奶")) {
-        speak("好的，這是您要的牛奶。請問還需要什麼商品嗎？");
-    } else {
-        speak("抱歉，我無法識別這個商品，請嘗試其他品項。");
-    }
-}
+// 處理語音回應
+recognition.onresult = (event) => {
+  const speechResult = event.results[0][0].transcript;
+  console.log('使用者說:', speechResult);
 
-// 逐字顯示文字
-function displayTextLetterByLetter(text, elementId) {
-    const element = document.getElementById(elementId);
-    element.innerText = "";
-    let index = 0;
+  // 判斷輸入內容
+  if (prices[speechResult]) {
+    cart.push(speechResult);
+    const itemPrice = prices[speechResult];
+    cartItems.innerHTML += `<div><img src="${speechResult}.png" alt="${speechResult}"> ${speechResult} - ${itemPrice} 元</div>`;
+    const total = cart.reduce((sum, item) => sum + prices[item], 0);
+    totalPrice.textContent = `總計：${total} 元`;
+    speak(`這是你的${speechResult}，還需要購買什麼？`);
+  } else if (speechResult.includes('沒了') || speechResult.includes('夠了') || speechResult.includes('結帳')) {
+    const total = cart.reduce((sum, item) => sum + prices[item], 0);
+    speak(`總共是${total}元。謝謝購物！`);
+  } else {
+    speak('抱歉，我不明白您的需求，請再說一次。');
+  }
+};
 
-    const interval = setInterval(() => {
-        if (index < text.length) {
-            element.innerText += text.charAt(index);
-            index++;
-        } else {
-            clearInterval(interval);
-        }
-    }, 150);
-}
+// 啟動頁面時自動開始
+window.onload = startInteraction;
