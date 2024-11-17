@@ -1,72 +1,30 @@
 body {
   font-family: Arial, sans-serif;
+  text-align: center;
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f4f4f4;
 }
 
 .container {
-  text-align: center;
+  margin-top: 50px;
 }
 
 #clerk-image {
-  width: 200px;
+  width: 300px;
   height: auto;
-  margin-bottom: 20px;
 }
 
 #speech-box {
-  margin-bottom: 20px;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  display: inline-block;
+  border-radius: 5px;
 }
 
 #speech-text {
   font-size: 18px;
-  background-color: #fff;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  display: inline-block;
-}
-
-#start-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#start-button:hover {
-  background-color: #0056b3;
-}
-
-#cart {
-  margin-top: 20px;
-  background-color: #fff;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#cart-items {
-  margin-bottom: 10px;
-}
-
-#cart-items img {
-  width: 50px;
-  margin-right: 10px;
-}
-
-#total-price {
-  font-weight: bold;
-  font-size: 16px;
+  color: #333;
 }
