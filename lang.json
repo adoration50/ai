@@ -1,0 +1,7 @@
+{
+  "welcome": "歡迎光臨，請問需要購買什麼？",
+  "apology_no_response": "抱歉，我沒有聽到您的需求，請再說一次。",
+  "apology_unknown": "抱歉，我沒有聽懂，請再說一次。",
+  "item_added": "這是你的{item}，還需要購買什麼？",
+  "checkout": "總共是{total}元。謝謝購物！"
+}
