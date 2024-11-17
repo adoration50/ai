@@ -31,12 +31,14 @@ function speak(text) {
 
   utterance.onend = () => {
     clerkImage.src = 'A.png'; // 說完話切換回靜態圖片
+    if (!waitingForResponse) {
+      recognition.start(); // 確保說話後啟動語音辨識
+    }
   };
 }
 
 // 開始語音辨識
 function startRecognition() {
-  recognition.start();
   waitingForResponse = true; // 設置為等待用戶回應
   speak('歡迎光臨，請問需要購買什麼？');
   startResponseTimeout(); // 啟動計時器
@@ -89,7 +91,7 @@ recognition.onerror = (event) => {
 
 // 啟動語音功能
 window.onload = () => {
-  setTimeout(() => {
-    startRecognition();
+  window.setTimeout(() => {
+    speak('歡迎光臨，請問需要購買什麼？');
   }, 1000); // 延遲 1 秒啟動
 };
