@@ -16,14 +16,14 @@ recognition.interimResults = false;
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-TW';
+  speechText.textContent = text; // 同步顯示文字
   clerkImage.src = 'B.gif'; // 切換為說話圖片
-  speechText.textContent = text; // 顯示文字
   window.speechSynthesis.speak(utterance);
 
   utterance.onend = () => {
     clerkImage.src = 'A.png'; // 說完話切換回靜態圖片
     if (!waitingForResponse) {
-      recognition.start(); // 開啟麥克風
+      recognition.start(); // 開啟語音辨識
       startResponseTimeout(); // 啟動計時器等待使用者回應
     }
   };
